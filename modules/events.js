@@ -1,17 +1,24 @@
 'use strict';
 
 const Events = require('./model');
+const verifyUser = require('./auth');
 
 const Calendar = {};
 
 Calendar.getAllEvents = async (request, response, next) => {
-  try {
-    let eventData = await Events.find();
-    // console.log(eventData);
-    response.status(200).send(eventData);
-  } catch (error) {
-    next(error);
-  }
+  verifyUser(request, async (error) => {
+    if(error){
+      response.send('invalid tokem');
+    } else {
+      try {
+        let eventData = await Events.find();
+        // console.log(eventData);
+        response.status(200).send(eventData);
+      } catch (error) {
+        next(error);
+      }
+    }
+  })
 }
 
 Calendar.addAnEvent = async (request, response, next) => {
@@ -43,7 +50,7 @@ Calendar.deleteAnEvent = async (request, response, next) => {
   try {
     const id = request.params.id;
     await Events.findByIdAndDelete(id);
-    response.status(200).send('Deleted successfully');
+    response.status(200).send(id);
   } catch (error) {
     next(error);
   }
