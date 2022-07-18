@@ -16,7 +16,7 @@ const getHolidays = async (request, response, next) => {
     let url = `https://holidayapi.com/v1/holidays?country=${country}&year=${year}&key=${process.env.HOLIDAY_API_KEY}`;
     let data = await axios.get(url);
     let sanitizedData = parseHolidayData(data.data);
-    console.log(sanitizedData);
+    // console.log(sanitizedData);
     response.status(200).send(sanitizedData);
   } catch (error) {
     next(error)
